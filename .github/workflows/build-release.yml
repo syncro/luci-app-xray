@@ -37,10 +37,12 @@ jobs:
         run: echo "::set-output name=timestamp::$(date +"%s")"
         
       - name: Create Git Tag
+        id: "tag"
         run: |
           TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
           git tag $TAG_NAME
           git push origin $TAG_NAME
+          echo "$TAG_NAME"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
@@ -122,7 +124,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: "*.ipk"
-          tag_name: ${{ env.TAG_NAME }}
+          tag_name: ${{ steps.tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
